@@ -333,6 +333,22 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
+## ☕ Support This Project
+
+Building tools like Prompt Studio takes countless hours of coding, debugging, and drinking coffee. ☕
+
+If this project saved you time or made your life easier, consider buying me a coffee! Your support helps keep the development going and the coffee pot full.
+
+<p align="center">
+  <a href="https://ko-fi.com/pilvi_pl" target="_blank">
+    <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Buy Me a Coffee at ko-fi.com" />
+  </a>
+</p>
+
+**Every coffee counts!** Whether it's a single espresso or a fancy latte, your contribution means the world. 🙏
+
+---
+
 <p align="center">
   <strong>Powered by Pilvi</strong><br>
   <em>Making contact center management simpler</em>
