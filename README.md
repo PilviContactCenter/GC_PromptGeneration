@@ -167,6 +167,16 @@ flowchart TD
     style I fill:#1b3d6f,color:#fff
 ```
 
+### 📸 Embedded Mode Preview
+
+Here's how Prompt Studio looks when embedded as a Client App inside Genesys Cloud:
+
+<p align="center">
+  <img src="screenshots/embedded-mode.png" alt="Prompt Studio embedded in Genesys Cloud" width="800" />
+</p>
+
+*Seamlessly integrated with the Genesys Cloud interface — users can create and manage prompts without leaving their workspace!*
+
 ---
 
 ## 🌍 Supported Languages
