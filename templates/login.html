@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Prompt Studio</title>
+
+    <!-- Genesys Spark Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&family=Noto+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Genesys Spark Components CSS -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/genesys-spark-components@4/dist/genesys-webcomponents/genesys-webcomponents.css">
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+
+    <style>
+        :root {
+            --gux-color-primary: #ff4f1f;
+            --gux-color-primary-light: #ff7f5c;
+            --gux-color-primary-dark: #d93d10;
+            --gux-color-secondary: #1b3d6f;
+            --gux-color-secondary-dark: #0d2240;
+            --gux-color-text-primary: #1b1b1b;
+            --gux-color-text-secondary: #666666;
+            --gux-spacing-sm: 8px;
+            --gux-spacing-md: 16px;
+            --gux-spacing-lg: 24px;
+            --gux-spacing-xl: 32px;
+            --gux-radius-md: 8px;
+            --gux-radius-lg: 16px;
+            --gux-shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+            --gux-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Urbanist', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--gux-spacing-lg);
+            background: linear-gradient(135deg, #1b3d6f 0%, #0d2240 50%, #0a1a2e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background elements */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        body::before {
+            width: 600px;
+            height: 600px;
+            background: var(--gux-color-primary);
+            top: -200px;
+            right: -100px;
+        }
+
+        body::after {
+            width: 400px;
+            height: 400px;
+            background: #3b82f6;
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--gux-radius-lg);
+            box-shadow: var(--gux-shadow-xl);
+            padding: var(--gux-spacing-xl);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--gux-spacing-xl);
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gux-color-primary) 0%, var(--gux-color-primary-dark) 100%);
+            border-radius: var(--gux-radius-lg);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--gux-spacing-md);
+            box-shadow: 0 8px 24px rgba(255, 79, 31, 0.3);
+        }
+
+        .login-logo ion-icon {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .login-title {
+            font-family: 'Urbanist', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--gux-color-text-primary);
+            margin-bottom: var(--gux-spacing-sm);
+        }
+
+        .login-subtitle {
+            font-size: 1rem;
+            color: var(--gux-color-text-secondary);
+        }
+
+        .error-message {
+            background: #fde8e5;
+            border: 1px solid #f5c4bc;
+            border-radius: var(--gux-radius-md);
+            padding: var(--gux-spacing-md);
+            margin-bottom: var(--gux-spacing-lg);
+            color: #8c1d09;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: var(--gux-spacing-sm);
+        }
+
+        .gux-btn-oauth {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--gux-spacing-md);
+            padding: var(--gux-spacing-md) var(--gux-spacing-lg);
+            font-family: 'Urbanist', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--gux-color-primary) 0%, var(--gux-color-primary-dark) 100%);
+            border: none;
+            border-radius: var(--gux-radius-md);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(255, 79, 31, 0.3);
+        }
+
+        .gux-btn-oauth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 79, 31, 0.4);
+        }
+
+        .gux-btn-oauth:active {
+            transform: translateY(0);
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: var(--gux-spacing-md);
+            margin: var(--gux-spacing-lg) 0;
+            color: var(--gux-color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e5e5;
+        }
+
+        .login-info {
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--gux-color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .permissions-card {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: var(--gux-radius-md);
+            padding: var(--gux-spacing-md);
+            margin-top: var(--gux-spacing-lg);
+        }
+
+        .permissions-header {
+            display: flex;
+            align-items: center;
+            gap: var(--gux-spacing-sm);
+            margin-bottom: var(--gux-spacing-sm);
+            color: #0369a1;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .permissions-content {
+            font-size: 0.8125rem;
+            color: #0284c7;
+        }
+
+        .permissions-list {
+            margin-top: var(--gux-spacing-sm);
+            padding-left: var(--gux-spacing-lg);
+        }
+
+        .permissions-list li {
+            margin-bottom: 4px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: var(--gux-spacing-lg);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        .genesys-wordmark {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--gux-spacing-sm);
+            margin-top: var(--gux-spacing-xl);
+            font-size: 0.8125rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .genesys-wordmark strong {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Loading state */
+        .login-loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .login-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e5e5e5;
+            border-top-color: var(--gux-color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .login-loading h2 {
+            font-family: 'Urbanist', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--gux-color-text-primary);
+        }
+
+        .login-loading p {
+            color: var(--gux-color-text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card" id="loginCard">
+            <div class="login-header">
+                <div class="login-logo">
+                    <ion-icon name="mic-outline"></ion-icon>
+                </div>
+                <h1 class="login-title">Prompt Studio</h1>
+                <p class="login-subtitle">Sign in with Genesys Cloud</p>
+            </div>
+
+            {% if error %}
+            <div class="error-message">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Genesys Cloud OAuth Login Button -->
+            <a href="{{ url_for('oauth_authorize') }}" class="gux-btn-oauth">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                Sign in with Genesys Cloud
+            </a>
+
+            <div class="login-divider">
+                <span>About</span>
+            </div>
+
+            <div class="login-info">
+                <p>Create and manage audio prompts for your Genesys Cloud contact center.</p>
+            </div>
+
+            <div class="permissions-card">
+                <div class="permissions-header">
+                    <ion-icon name="key-outline"></ion-icon>
+                    Required Permissions
+                </div>
+                <div class="permissions-content">
+                    <p>Your Genesys Cloud account needs access to:</p>
+                    <ul class="permissions-list">
+                        <li>Architect (for prompt management)</li>
+                        <li>Users (Read - for authentication)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-footer">
+            Prompt Studio v1.0
+        </div>
+
+        <div class="genesys-wordmark">
+            Powered by <strong>Pilvi</strong>
+        </div>
+    </div>
+
+    <!-- Genesys Cloud Platform Client SDK (for embedded mode) -->
+    <script src="https://sdk-cdn.mypurecloud.com/javascript/latest/purecloud-platform-client-v2.min.js"></script>
+
+    <script>
+        (function () {
+            // Check if running inside an iframe (embedded in Genesys Cloud)
+            const isEmbedded = window.self !== window.top;
+
+            if (isEmbedded) {
+                console.log('[Embedded Mode] Detected iframe environment on login page');
+
+                // Show loading state
+                const loginCard = document.getElementById('loginCard');
+                if (loginCard) {
+                    const originalContent = loginCard.innerHTML;
+                    loginCard.innerHTML = `
+                        <div class="login-loading">
+                            <div class="login-spinner"></div>
+                            <h2>Authenticating...</h2>
+                            <p>Connecting to Genesys Cloud</p>
+                        </div>
+                    `;
+
+                    // Try to authenticate via Platform SDK
+                    setTimeout(async function () {
+                        try {
+                            if (typeof platformClient !== 'undefined') {
+                                const client = platformClient.ApiClient.instance;
+                                client.setEnvironment('{{ config.get("GENESYS_BASE_URL", "mypurecloud.de") }}');
+
+                                // Check if we have authentication from parent
+                                const auth = client.authentications['PureCloud OAuth'];
+                                if (auth && auth.accessToken) {
+                                    console.log('[Embedded Mode] Token found, authenticating...');
+
+                                    const response = await fetch('/auth/embedded', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ access_token: auth.accessToken })
+                                    });
+
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        console.log('[Embedded Mode] Auth successful, redirecting...');
+                                        window.location.href = '/';
+                                        return;
+                                    }
+                                }
+                            }
+
+                            // If embedded auth failed, restore original content
+                            console.log('[Embedded Mode] Auto-auth not available, showing manual login');
+                            loginCard.innerHTML = originalContent;
+                        } catch (error) {
+                            console.error('[Embedded Mode] Auth error:', error);
+                            loginCard.innerHTML = originalContent;
+                        }
+                    }, 500);
+                }
+            }
+        })();
+    </script>
+</body>
+
+</html>
