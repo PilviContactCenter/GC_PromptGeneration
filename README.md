@@ -227,6 +227,57 @@ Export prompts in any language supported by Genesys Cloud:
 
 ---
 
+## 🐳 Docker Deployment
+
+For production deployments, we recommend using Docker.
+
+### Quick Start with Docker Compose
+
+1. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your credentials
+   ```
+
+2. **Build and run**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Access the application**
+   ```
+   http://localhost:5001
+   ```
+
+### Docker Commands
+
+```bash
+# Build the image
+docker build -t prompt-studio .
+
+# Run the container
+docker run -d \
+  --name prompt-studio \
+  -p 5001:5001 \
+  --env-file .env \
+  -v $(pwd)/uploads:/app/uploads \
+  prompt-studio
+
+# View logs
+docker logs -f prompt-studio
+
+# Stop the container
+docker-compose down
+```
+
+### Production Deployment
+
+For production, consider:
+- Using a reverse proxy (nginx) for HTTPS
+- Setting `OAUTH_REDIRECT_URI` to your production URL
+- Using a persistent volume for uploads
+- Configuring proper security headers
+
 ## ⚙️ Configuration
 
 Copy `.env.example` to `.env` and configure:

@@ -1,0 +1,61 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.eggs
+
+# Virtual environments
+venv
+env
+.venv
+ENV
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Environment files (will be passed via docker-compose)
+.env
+.env.local
+.env.*.local
+
+# Database (will be mounted as volume)
+*.db
+*.sqlite
+*.sqlite3
+instance
+
+# Uploads (will be mounted as volume)
+uploads
+
+# Documentation (not needed in container)
+*.md
+!README.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Tests
+tests
+*.test.py
+.pytest_cache
+.coverage
+
+# Logs
+*.log
+logs
+
+# OS
+.DS_Store
+Thumbs.db

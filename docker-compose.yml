@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  prompt-studio:
+    build: .
+    container_name: prompt-studio
+    ports:
+      - "5001:5001"
+    environment:
+      # Azure TTS Configuration
+      - AZURE_SPEECH_KEY=${AZURE_SPEECH_KEY}
+      - AZURE_SPEECH_REGION=${AZURE_SPEECH_REGION}
+      
+      # Genesys Cloud API (Client Credentials)
+      - GENESYS_CLIENT_ID=${GENESYS_CLIENT_ID}
+      - GENESYS_CLIENT_SECRET=${GENESYS_CLIENT_SECRET}
+      - GENESYS_REGION=${GENESYS_REGION}
+      
+      # Genesys Cloud OAuth (Authorization Code)
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+      - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
+      - OAUTH_REDIRECT_URI=${OAUTH_REDIRECT_URI}
+      - GENESYS_BASE_URL=${GENESYS_BASE_URL}
+      
+      # Flask Configuration
+      - SECRET_KEY=${SECRET_KEY}
+      - FLASK_ENV=production
+    volumes:
+      # Persist uploaded files
+      - ./uploads:/app/uploads
+      # Persist SQLite database
+      - ./instance:/app/instance
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5001/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# Optional: Add reverse proxy for production
+#  nginx:
+#    image: nginx:alpine
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#    depends_on:
+#      - prompt-studio
