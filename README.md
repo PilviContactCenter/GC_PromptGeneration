@@ -371,18 +371,119 @@ Copy `.env.example` to `.env` and configure:
 
 ```
 PromptGeneration/
-├── app.py                 # Main Flask application (session-based auth)
-├── config.py              # Configuration settings
+├── .github/
+│   └── workflows/
+│       └── docker-publish.yml    # CI/CD: Auto-build and publish to GHCR
+├── app.py                        # Main Flask application (session-based auth)
+├── config.py                     # Configuration settings
+├── Dockerfile                    # Docker build configuration
+├── docker-compose.yml            # Development compose file
+├── docker-compose.prod.yml       # Production compose (pre-built image)
+├── docker-compose.watchtower.yml # Auto-update configuration
+├── scripts/
+│   └── update.sh                 # Manual update script
 ├── services/
-│   ├── azure_tts.py       # Azure Text-to-Speech integration
-│   └── genesys_export.py  # Genesys Cloud Architect export
+│   ├── azure_tts.py              # Azure Text-to-Speech integration
+│   └── genesys_export.py         # Genesys Cloud Architect export
 ├── static/
-│   ├── css/spark.css      # Genesys Spark design system
-│   └── js/main.js         # Frontend JavaScript
+│   ├── css/spark.css             # Genesys Spark design system
+│   └── js/main.js                # Frontend JavaScript
 ├── templates/
-│   ├── index.html         # Main application page
-│   └── login.html         # OAuth login page
-└── uploads/               # Temporary audio file storage
+│   ├── index.html                # Main application page
+│   └── login.html                # OAuth login page
+└── uploads/                      # Temporary audio file storage
+```
+
+---
+
+## 🔄 CI/CD Pipeline
+
+This project uses **GitHub Actions** for automated builds and **Watchtower** for automatic container updates.
+
+### CI/CD Flow
+
+```mermaid
+flowchart LR
+    subgraph Developer["👨‍💻 Developer"]
+        A[Push to main]
+    end
+    
+    subgraph GitHub["⚙️ GitHub Actions"]
+        B[Build Docker Image]
+        C[Push to GHCR]
+    end
+    
+    subgraph Server["🖧 Production Server"]
+        D[Watchtower detects update]
+        E[Pull new image]
+        F[Restart container]
+    end
+    
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    
+    style A fill:#ff4f1f,color:#fff
+    style C fill:#6e5494,color:#fff
+    style F fill:#1fa343,color:#fff
+```
+
+### How It Works
+
+1. **Push to `main` branch** → GitHub Actions automatically builds a new Docker image
+2. **Image published** → Pushed to GitHub Container Registry (`ghcr.io/pilvicontactcenter/prompt-studio`)
+3. **Watchtower detects** → Checks for new images every 5 minutes
+4. **Auto-update** → Pulls and restarts the container with zero downtime
+
+### Image Tags
+
+| Tag | Description |
+|-----|-------------|
+| `latest` | Most recent build from main branch |
+| `sha-xxxxxx` | Build from specific commit (for rollback) |
+| `YYYYMMDD-HHmm` | Timestamp-based version |
+
+### Setting Up Watchtower (Auto-Updates)
+
+For fully automated updates on your server:
+
+```bash
+# Start Watchtower alongside your app
+docker-compose -f docker-compose.prod.yml -f docker-compose.watchtower.yml up -d
+```
+
+Watchtower will:
+- Check for new images every 5 minutes
+- Automatically pull and restart the container
+- Clean up old images
+
+### Manual Update
+
+If you prefer manual control:
+
+```bash
+# Using the update script
+./update.sh
+
+# Or manually
+docker pull ghcr.io/pilvicontactcenter/prompt-studio:latest
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Rollback to Previous Version
+
+```bash
+# List available tags
+docker images ghcr.io/pilvicontactcenter/prompt-studio
+
+# Roll back to specific version
+docker-compose -f docker-compose.prod.yml down
+docker pull ghcr.io/pilvicontactcenter/prompt-studio:sha-abc1234
+# Edit docker-compose.prod.yml to use the specific tag, then:
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ---
