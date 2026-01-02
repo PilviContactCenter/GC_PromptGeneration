@@ -1,10 +1,13 @@
 version: '3.8'
 
+# Production Docker Compose - pulls pre-built image from GitHub Container Registry
+# Use this on your server for easy deployment without building
+
 services:
   prompt-studio:
-    build: .
+    image: ghcr.io/pilvicontactcenter/prompt-studio:dev
     container_name: prompt-studio
-    # Remove external port mapping - Caddy will proxy through internal network
+    # Uncomment below to expose port directly (without reverse proxy)
     # ports:
     #   - "5001:5001"
     environment:

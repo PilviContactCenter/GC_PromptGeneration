@@ -199,62 +199,88 @@ Export prompts in any language supported by Genesys Cloud:
 
 ### Prerequisites
 
-- Python 3.9 or higher
 - Azure Cognitive Services account (for Text-to-Speech)
 - Genesys Cloud organization with:
   - OAuth Client (Authorization Code) for user login
   - OAuth Client (Client Credentials) for API operations
   - Architect permissions
 
-### Quick Start
+Choose your deployment method below:
 
-1. **Clone the repository**
+---
+
+## 🐳 Option A: Docker (Recommended)
+
+The fastest way to get started — no building required! We provide pre-built Docker images.
+
+### Quick Start with Pre-built Image
+
+1. **Create a directory and download files**
    ```bash
-   git clone https://github.com/your-repo/PromptGeneration.git
-   cd PromptGeneration
+   mkdir prompt-studio && cd prompt-studio
+   
+   # Download required files
+   curl -O https://raw.githubusercontent.com/PilviContactCenter/GenesysCloudPromptGeneration/main/docker-compose.prod.yml
+   curl -O https://raw.githubusercontent.com/PilviContactCenter/GenesysCloudPromptGeneration/main/.env.example
+   curl -O https://raw.githubusercontent.com/PilviContactCenter/GenesysCloudPromptGeneration/main/scripts/update.sh
+   chmod +x update.sh
    ```
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Configure environment**
+2. **Configure environment**
    ```bash
    cp .env.example .env
-   # Edit .env with your credentials
+   nano .env  # Edit with your credentials
    ```
 
-4. **Run the application**
+3. **Run the application**
    ```bash
-   python app.py
+   docker-compose -f docker-compose.prod.yml up -d
    ```
 
-5. **Open in browser**
+4. **Access the application**
    ```
    http://localhost:5001
    ```
 
+### Updating to Latest Version
+
+```bash
+./update.sh
+```
+
+Or manually:
+```bash
+docker pull ghcr.io/pilvicontactcenter/prompt-studio:dev
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml up -d
+```
+
 ---
 
-## 🐳 Docker Deployment
+## 🐳 Option B: Docker (Build from Source)
 
-For production deployments, we recommend using Docker.
+For contributors or customization, build the image locally.
 
-### Quick Start with Docker Compose
+### Build and Run
 
-1. **Configure environment**
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/PilviContactCenter/GenesysCloudPromptGeneration.git
+   cd GenesysCloudPromptGeneration
+   ```
+
+2. **Configure environment**
    ```bash
    cp .env.example .env
    # Edit .env with your credentials
    ```
 
-2. **Build and run**
+3. **Build and run**
    ```bash
-   docker-compose up -d
+   docker-compose up -d --build
    ```
 
-3. **Access the application**
+4. **Access the application**
    ```
    http://localhost:5001
    ```
@@ -280,12 +306,49 @@ docker logs -f prompt-studio
 docker-compose down
 ```
 
-### Production Deployment
+---
+
+## 🐍 Option C: Local Python (Development)
+
+Run directly with Python for development and debugging.
+
+### Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/PilviContactCenter/GenesysCloudPromptGeneration.git
+   cd GenesysCloudPromptGeneration
+   ```
+
+2. **Install dependencies** (Python 3.9+ required)
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your credentials
+   ```
+
+4. **Run the application**
+   ```bash
+   python app.py
+   ```
+
+5. **Open in browser**
+   ```
+   http://localhost:5001
+   ```
+
+---
+
+## 🏭 Production Deployment
 
 For production, consider:
-- Using a reverse proxy (nginx) for HTTPS
+- Using a reverse proxy (Caddy/nginx) for HTTPS
 - Setting `OAUTH_REDIRECT_URI` to your production URL
-- Using a persistent volume for uploads
+- Using persistent volumes for uploads and database
 - Configuring proper security headers
 
 ## ⚙️ Configuration

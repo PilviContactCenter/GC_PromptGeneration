@@ -11,13 +11,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     FLASK_ENV=production
 
 # Install system dependencies for Azure Speech SDK
+# Note: Azure Speech SDK requires OpenSSL 1.1 which is not in newer Debian
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libssl-dev \
     ca-certificates \
     libasound2 \
     wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Install OpenSSL 1.1 for Azure Speech SDK compatibility
+RUN curl -O http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
+    && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
+    && rm libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Copy requirements first (for better caching)
 COPY requirements.txt .
