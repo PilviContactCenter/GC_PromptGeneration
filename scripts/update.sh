@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-IMAGE="ghcr.io/pilvicontactcenter/prompt-studio:dev"
+IMAGE="ghcr.io/pilvicontactcenter/prompt-studio:latest"
 COMPOSE_FILE="docker-compose.prod.yml"
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"

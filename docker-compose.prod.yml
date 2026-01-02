@@ -2,10 +2,11 @@ version: '3.8'
 
 # Production Docker Compose - pulls pre-built image from GitHub Container Registry
 # Use this on your server for easy deployment without building
+# Watchtower will automatically update when new images are pushed
 
 services:
   prompt-studio:
-    image: ghcr.io/pilvicontactcenter/prompt-studio:dev
+    image: ghcr.io/pilvicontactcenter/prompt-studio:latest
     container_name: prompt-studio
     # Uncomment below to expose port directly (without reverse proxy)
     # ports:

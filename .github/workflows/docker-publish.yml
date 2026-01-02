@@ -3,7 +3,7 @@ name: Build and Publish Docker Image
 on:
   push:
     branches:
-      - dev
+      - main
     paths-ignore:
       - '**.md'
       - 'screenshots/**'
@@ -41,12 +41,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            # Tag with branch name (dev)
-            type=ref,event=branch
-            # Tag with short SHA
+            # Always tag as 'latest' for Watchtower
+            type=raw,value=latest
+            # Tag with short SHA for rollback
             type=sha,prefix=sha-
-            # Tag with timestamp
-            type=raw,value=dev-{{date 'YYYYMMDD-HHmm'}}
+            # Tag with version timestamp
+            type=raw,value={{date 'YYYYMMDD-HHmm'}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -72,5 +72,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Pull command:**" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
