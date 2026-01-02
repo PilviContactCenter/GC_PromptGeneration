@@ -110,7 +110,7 @@ flowchart TB
         AUTH["OAuth Handler"]
         TTS["TTS Service"]
         EXP["Export Service"]
-        DB[("SQLite DB")]
+        SESS["Session Store"]
     end
     
     subgraph External["☁️ Cloud Services"]
@@ -127,7 +127,7 @@ flowchart TB
     AUTH <--> GC
     TTS <--> AZURE
     EXP <--> GC
-    AUTH --> DB
+    AUTH --> SESS
     
     style GC fill:#1b3d6f,color:#fff
     style AZURE fill:#0078d4,color:#fff
@@ -308,9 +308,8 @@ Copy `.env.example` to `.env` and configure:
 
 ```
 PromptGeneration/
-├── app.py                 # Main Flask application
+├── app.py                 # Main Flask application (session-based auth)
 ├── config.py              # Configuration settings
-├── models.py              # Database models
 ├── services/
 │   ├── azure_tts.py       # Azure Text-to-Speech integration
 │   └── genesys_export.py  # Genesys Cloud Architect export
