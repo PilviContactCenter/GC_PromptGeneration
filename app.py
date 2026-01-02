@@ -7,6 +7,7 @@ Simplified architecture: Session-based authentication (no database required)
 """
 from flask import Flask, redirect, url_for, render_template, request, session, jsonify, send_from_directory
 from functools import wraps
+from config import Config
 import os
 import re
 import uuid
@@ -18,34 +19,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# OAuth Configuration for Genesys Cloud
+# OAuth Configuration for Genesys Cloud (loaded from Config)
 OAUTH_CONFIG = {
-    'client_id': os.getenv('OAUTH_CLIENT_ID'),
-    'client_secret': os.getenv('OAUTH_CLIENT_SECRET'),
-    'redirect_uri': os.getenv('OAUTH_REDIRECT_URI', 'http://localhost:5001/oauth/callback'),
-    'base_url': os.getenv('GENESYS_BASE_URL', 'mypurecloud.de'),
+    'client_id': Config.OAUTH_CLIENT_ID,
+    'client_secret': Config.OAUTH_CLIENT_SECRET,
+    'redirect_uri': Config.OAUTH_REDIRECT_URI,
+    'base_url': Config.GENESYS_BASE_URL,
     'scopes': 'architect users:readonly'
 }
-
-# App Configuration
-class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_hex(32))
-    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload
-
-    # Azure TTS Credentials
-    AZURE_SPEECH_KEY = os.getenv('AZURE_SPEECH_KEY')
-    AZURE_SPEECH_REGION = os.getenv('AZURE_SPEECH_REGION')
-
-    # Genesys Cloud API Credentials (for exports)
-    GENESYS_CLIENT_ID = os.getenv('GENESYS_CLIENT_ID')
-    GENESYS_CLIENT_SECRET = os.getenv('GENESYS_CLIENT_SECRET')
-    GENESYS_REGION = os.getenv('GENESYS_REGION', 'mypurecloud.de')
-    GENESYS_BASE_URL = OAUTH_CONFIG['base_url']
-
-    # Session cookie settings for embedded iframe support
-    SESSION_COOKIE_SAMESITE = 'None'
-    SESSION_COOKIE_SECURE = True  # Required when SameSite=None (needs HTTPS)
 
 
 def login_required(f):

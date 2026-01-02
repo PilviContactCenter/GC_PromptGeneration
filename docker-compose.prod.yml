@@ -33,8 +33,6 @@ services:
     volumes:
       # Persist uploaded files
       - ./uploads:/app/uploads
-      # Persist SQLite database
-      - ./instance:/app/instance
     restart: unless-stopped
     logging:
       driver: "json-file"
