@@ -1,0 +1,34 @@
+version: '3.8'
+
+# Watchtower - Automatic Docker container updates
+# This monitors your containers and automatically updates them when new images are available
+# 
+# Run with: docker-compose -f docker-compose.watchtower.yml up -d
+
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      # Check for updates every 5 minutes (300 seconds)
+      - WATCHTOWER_POLL_INTERVAL=300
+      # Only update containers with specific label (optional - remove to update all)
+      # - WATCHTOWER_LABEL_ENABLE=true
+      # Cleanup old images after updating
+      - WATCHTOWER_CLEANUP=true
+      # Include stopped containers
+      - WATCHTOWER_INCLUDE_STOPPED=false
+      # Logging
+      - WATCHTOWER_NOTIFICATIONS_LEVEL=info
+      # Timezone
+      - TZ=Europe/Warsaw
+    # Only monitor specific containers (prompt-studio)
+    command: prompt-studio
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

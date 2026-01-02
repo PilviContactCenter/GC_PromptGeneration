@@ -250,7 +250,7 @@ The fastest way to get started — no building required! We provide pre-built Do
 
 Or manually:
 ```bash
-docker pull ghcr.io/pilvicontactcenter/prompt-studio:dev
+docker pull ghcr.io/pilvicontactcenter/prompt-studio:latest
 docker-compose -f docker-compose.prod.yml down
 docker-compose -f docker-compose.prod.yml up -d
 ```
