@@ -57,6 +57,49 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         document.getElementById('recordStatus').innerText = "Audio recording not supported in this browser.";
     }
+
+    /* --- Event Listeners (Refactored from inline HTML) --- */
+
+    // Tabs
+    document.querySelectorAll('.gux-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tabId = e.currentTarget.dataset.tab;
+            if (tabId) switchTab(tabId);
+        });
+    });
+
+    // Generate Button
+    const generateBtn = document.getElementById('generateBtn');
+    if (generateBtn) {
+        generateBtn.addEventListener('click', generateTTS);
+    }
+
+    // Record Button
+    const recordBtn = document.getElementById('recordBtn');
+    if (recordBtn) {
+        recordBtn.addEventListener('click', toggleRecording);
+    }
+
+    // Play Button
+    // Note: The play button might be dynamic or hidden, but it exists in DOM.
+    // However, if we re-create it or it's static, listener is fine.
+    // Index.html has it static. 
+    const playBtn = document.getElementById('playBtn');
+    if (playBtn) {
+        playBtn.addEventListener('click', playPause);
+    }
+
+    // Export Button
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportToGenesys);
+    }
+
+    // File Input
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => handleFileSelect(e.target));
+    }
 });
 
 function updatePlayButton() {
@@ -72,8 +115,10 @@ function switchTab(tabId) {
     // Update tab buttons
     document.querySelectorAll('.gux-tab-btn').forEach(btn => {
         btn.classList.remove('active');
+        if (btn.dataset.tab === tabId) {
+            btn.classList.add('active');
+        }
     });
-    event.currentTarget.classList.add('active');
 
     // Update tab content
     document.querySelectorAll('.gux-tab-content').forEach(content => {

@@ -24,640 +24,10 @@
     <!-- Ionicons for additional icons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 
-    <style>
-        :root {
-            /* Genesys Spark Color Tokens */
-            --gux-color-primary: #ff4f1f;
-            --gux-color-primary-light: #ff7f5c;
-            --gux-color-primary-dark: #d93d10;
-            --gux-color-secondary: #1b3d6f;
-            --gux-color-secondary-light: #2d5a9e;
-            --gux-color-secondary-dark: #0d2240;
-            --gux-color-success: #1fa343;
-            --gux-color-success-light: #dcfce7;
-            --gux-color-warning: #f29f05;
-            --gux-color-warning-light: #fef3c7;
-            --gux-color-error: #d93d10;
-            --gux-color-error-light: #fee2e2;
-            --gux-color-info: #0066cc;
-            --gux-color-info-light: #dbeafe;
-            --gux-color-surface: #ffffff;
-            --gux-color-surface-secondary: #f5f5f5;
-            --gux-color-surface-tertiary: #e8e8e8;
-            --gux-color-text-primary: #1b1b1b;
-            --gux-color-text-secondary: #666666;
-            --gux-color-text-tertiary: #9ca3af;
-            --gux-color-border: #d9d9d9;
-            --gux-color-border-light: #e5e5e5;
+    <!-- Custom Spark CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/spark.css') }}">
 
-            /* Spacing */
-            --gux-spacing-xs: 4px;
-            --gux-spacing-sm: 8px;
-            --gux-spacing-md: 16px;
-            --gux-spacing-lg: 24px;
-            --gux-spacing-xl: 32px;
-            --gux-spacing-xxl: 48px;
 
-            /* Border Radius */
-            --gux-radius-sm: 4px;
-            --gux-radius-md: 8px;
-            --gux-radius-lg: 16px;
-            --gux-radius-xl: 24px;
-
-            /* Shadows */
-            --gux-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
-            --gux-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-            --gux-shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
-            --gux-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
-
-            /* Transitions */
-            --gux-transition-fast: 150ms ease;
-            --gux-transition-base: 200ms ease;
-            --gux-transition-spring: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gux-color-surface-secondary);
-            color: var(--gux-color-text-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ===== NAVIGATION ===== */
-        .gux-nav {
-            background: linear-gradient(135deg, var(--gux-color-secondary) 0%, var(--gux-color-secondary-dark) 100%);
-            color: white;
-            box-shadow: var(--gux-shadow-md);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .gux-nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--gux-spacing-lg);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-
-        .gux-nav-brand {
-            display: flex;
-            align-items: center;
-            gap: var(--gux-spacing-md);
-            text-decoration: none;
-            color: white;
-        }
-
-        .gux-nav-logo {
-            width: 36px;
-            height: 36px;
-            background: var(--gux-color-primary);
-            border-radius: var(--gux-radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(255, 79, 31, 0.3);
-        }
-
-        .gux-nav-title {
-            font-family: 'Urbanist', sans-serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-
-        .gux-nav-subtitle {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            margin-left: 12px;
-            padding-left: 12px;
-            border-left: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .gux-nav-user {
-            display: flex;
-            align-items: center;
-            gap: var(--gux-spacing-md);
-        }
-
-        .gux-user-info {
-            display: flex;
-            align-items: center;
-            gap: var(--gux-spacing-sm);
-            padding: var(--gux-spacing-sm) var(--gux-spacing-md);
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--gux-radius-md);
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.875rem;
-        }
-
-        .gux-user-info ion-icon {
-            font-size: 1.25rem;
-        }
-
-        .gux-btn-logout {
-            display: flex;
-            align-items: center;
-            gap: var(--gux-spacing-sm);
-            padding: var(--gux-spacing-sm) var(--gux-spacing-md);
-            background: var(--gux-color-primary);
-            color: white;
-            border: none;
-            border-radius: var(--gux-radius-md);
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .gux-btn-logout:hover {
-            background: var(--gux-color-primary-dark);
-            transform: translateY(-1px);
-        }
-
-        @media (max-width: 600px) {
-            .gux-user-info span {
-                display: none;
-            }
-
-            .gux-btn-logout span {
-                display: none;
-            }
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        .gux-main {
-            flex: 1;
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
-            padding: var(--gux-spacing-xl) var(--gux-spacing-lg);
-        }
-
-        /* ===== HERO HEADER ===== */
-        .gux-hero {
-            text-align: center;
-            margin-bottom: var(--gux-spacing-xl);
-            padding: var(--gux-spacing-xl) 0;
-        }
-
-        .gux-hero h1 {
-            font-family: 'Urbanist', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--gux-color-secondary);
-            margin-bottom: var(--gux-spacing-sm);
-        }
-
-        .gux-hero p {
-            font-size: 1.125rem;
-            color: var(--gux-color-text-secondary);
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        /* ===== CARD CONTAINER ===== */
-        .gux-card {
-            background: var(--gux-color-surface);
-            border-radius: var(--gux-radius-lg);
-            box-shadow: var(--gux-shadow-md);
-            overflow: hidden;
-            transition: box-shadow var(--gux-transition-spring);
-        }
-
-        .gux-card:hover {
-            box-shadow: var(--gux-shadow-lg);
-        }
-
-        /* ===== TABS ===== */
-        .gux-tabs-header {
-            display: flex;
-            background: var(--gux-color-surface-secondary);
-            border-bottom: 1px solid var(--gux-color-border-light);
-        }
-
-        .gux-tab-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--gux-spacing-sm);
-            padding: var(--gux-spacing-md) var(--gux-spacing-lg);
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: var(--gux-color-text-secondary);
-            font-family: 'Urbanist', sans-serif;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--gux-transition-fast);
-        }
-
-        .gux-tab-btn:hover {
-            color: var(--gux-color-text-primary);
-            background: var(--gux-color-surface);
-        }
-
-        .gux-tab-btn.active {
-            color: var(--gux-color-primary);
-            border-bottom-color: var(--gux-color-primary);
-            background: var(--gux-color-surface);
-        }
-
-        .gux-tab-btn ion-icon {
-            font-size: 1.25rem;
-        }
-
-        .gux-tab-content {
-            display: none;
-            padding: var(--gux-spacing-xl);
-            animation: fadeSlideIn 0.3s ease;
-        }
-
-        .gux-tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== FORM ELEMENTS ===== */
-        .gux-form-group {
-            margin-bottom: var(--gux-spacing-lg);
-        }
-
-        .gux-label {
-            display: block;
-            margin-bottom: var(--gux-spacing-xs);
-            font-family: 'Urbanist', sans-serif;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: var(--gux-color-text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .gux-input,
-        .gux-textarea,
-        .gux-select {
-            width: 100%;
-            padding: 12px 16px;
-            font-family: 'Noto Sans', sans-serif;
-            font-size: 1rem;
-            color: var(--gux-color-text-primary);
-            background: var(--gux-color-surface);
-            border: 2px solid var(--gux-color-border);
-            border-radius: var(--gux-radius-md);
-            transition: all var(--gux-transition-fast);
-        }
-
-        .gux-input:focus,
-        .gux-textarea:focus,
-        .gux-select:focus {
-            outline: none;
-            border-color: var(--gux-color-primary);
-            box-shadow: 0 0 0 4px rgba(255, 79, 31, 0.12);
-        }
-
-        .gux-input::placeholder,
-        .gux-textarea::placeholder {
-            color: var(--gux-color-text-tertiary);
-        }
-
-        .gux-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        /* ===== BUTTONS ===== */
-        .gux-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--gux-spacing-sm);
-            padding: 12px 24px;
-            font-family: 'Urbanist', sans-serif;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            border: none;
-            border-radius: var(--gux-radius-md);
-            cursor: pointer;
-            transition: all var(--gux-transition-spring);
-            text-decoration: none;
-        }
-
-        .gux-btn-primary {
-            background: var(--gux-color-primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 79, 31, 0.25);
-            width: 100%;
-        }
-
-        .gux-btn-primary:hover {
-            background: var(--gux-color-primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 79, 31, 0.35);
-        }
-
-        .gux-btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .gux-btn-secondary {
-            background: var(--gux-color-surface);
-            color: var(--gux-color-text-primary);
-            border: 2px solid var(--gux-color-border);
-        }
-
-        .gux-btn-secondary:hover {
-            background: var(--gux-color-surface-secondary);
-            border-color: var(--gux-color-text-secondary);
-        }
-
-        /* ===== RECORD BUTTON ===== */
-        .gux-record-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: var(--gux-spacing-xl);
-        }
-
-        .gux-record-btn {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
-            border: 4px solid var(--gux-color-error);
-            color: var(--gux-color-error);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all var(--gux-transition-spring);
-            box-shadow: var(--gux-shadow-md);
-        }
-
-        .gux-record-btn:hover {
-            transform: scale(1.05);
-            box-shadow: var(--gux-shadow-lg);
-        }
-
-        .gux-record-btn.recording {
-            background: var(--gux-color-error);
-            color: white;
-            animation: pulse-record 1.5s ease-in-out infinite;
-            box-shadow: 0 0 0 0 rgba(217, 61, 16, 0.4);
-        }
-
-        @keyframes pulse-record {
-            0% {
-                box-shadow: 0 0 0 0 rgba(217, 61, 16, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 20px rgba(217, 61, 16, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(217, 61, 16, 0);
-            }
-        }
-
-        .gux-record-status {
-            margin-top: var(--gux-spacing-lg);
-            font-size: 0.9375rem;
-            color: var(--gux-color-text-secondary);
-        }
-
-        /* ===== DROP ZONE ===== */
-        .gux-drop-zone {
-            border: 2px dashed var(--gux-color-border);
-            border-radius: var(--gux-radius-lg);
-            padding: var(--gux-spacing-xxl);
-            text-align: center;
-            cursor: pointer;
-            transition: all var(--gux-transition-base);
-            background: var(--gux-color-surface-secondary);
-        }
-
-        .gux-drop-zone:hover,
-        .gux-drop-zone.dragover {
-            border-color: var(--gux-color-primary);
-            background: rgba(255, 79, 31, 0.04);
-        }
-
-        .gux-drop-zone ion-icon {
-            font-size: 3rem;
-            color: var(--gux-color-text-tertiary);
-            margin-bottom: var(--gux-spacing-md);
-        }
-
-        .gux-drop-zone p {
-            color: var(--gux-color-text-secondary);
-        }
-
-        .gux-drop-zone .gux-drop-hint {
-            font-size: 0.8125rem;
-            color: var(--gux-color-text-tertiary);
-            margin-top: var(--gux-spacing-sm);
-        }
-
-        /* ===== RESULT SECTION ===== */
-        .gux-result-section {
-            display: none;
-            margin-top: var(--gux-spacing-xl);
-            border-top: 1px solid var(--gux-color-border-light);
-            padding-top: var(--gux-spacing-xl);
-        }
-
-        .gux-result-section.visible {
-            display: block;
-        }
-
-        .gux-section-title {
-            font-family: 'Urbanist', sans-serif;
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--gux-color-secondary);
-            margin-bottom: var(--gux-spacing-md);
-            display: flex;
-            align-items: center;
-            gap: var(--gux-spacing-sm);
-        }
-
-        /* ===== AUDIO PLAYER ===== */
-        .gux-audio-player {
-            background: linear-gradient(135deg, var(--gux-color-surface-secondary) 0%, var(--gux-color-surface-tertiary) 100%);
-            border-radius: var(--gux-radius-md);
-            padding: var(--gux-spacing-lg);
-            margin-bottom: var(--gux-spacing-xl);
-        }
-
-        #waveform {
-            border-radius: var(--gux-radius-sm);
-            overflow: hidden;
-        }
-
-        .gux-player-controls {
-            display: flex;
-            justify-content: center;
-            gap: var(--gux-spacing-md);
-            margin-top: var(--gux-spacing-md);
-        }
-
-        .gux-play-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--gux-color-primary);
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--gux-transition-spring);
-            box-shadow: 0 4px 12px rgba(255, 79, 31, 0.3);
-        }
-
-        .gux-play-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(255, 79, 31, 0.4);
-        }
-
-        /* ===== EXPORT CARD ===== */
-        .gux-export-card {
-            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
-            border: 1px solid var(--gux-color-border-light);
-            border-radius: var(--gux-radius-md);
-            padding: var(--gux-spacing-lg);
-        }
-
-        /* ===== STATUS MESSAGES ===== */
-        .gux-status {
-            display: none;
-            padding: var(--gux-spacing-md);
-            border-radius: var(--gux-radius-md);
-            margin-top: var(--gux-spacing-md);
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .gux-status.visible {
-            display: block;
-            animation: fadeSlideIn 0.3s ease;
-        }
-
-        .gux-status-success {
-            background: var(--gux-color-success-light);
-            color: #166534;
-            border: 1px solid rgba(31, 163, 67, 0.2);
-        }
-
-        .gux-status-error {
-            background: var(--gux-color-error-light);
-            color: #991b1b;
-            border: 1px solid rgba(217, 61, 16, 0.2);
-        }
-
-        .gux-status-loading {
-            background: var(--gux-color-info-light);
-            color: #1e40af;
-            border: 1px solid rgba(0, 102, 204, 0.2);
-        }
-
-        /* ===== FOOTER ===== */
-        .gux-footer {
-            background: linear-gradient(135deg, var(--gux-color-secondary) 0%, var(--gux-color-secondary-dark) 100%);
-            color: rgba(255, 255, 255, 0.7);
-            padding: var(--gux-spacing-lg);
-            text-align: center;
-            font-size: 0.875rem;
-        }
-
-        .gux-footer strong {
-            color: white;
-        }
-
-        /* ===== GRID HELPERS ===== */
-        .gux-grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--gux-spacing-md);
-        }
-
-        @media (max-width: 600px) {
-            .gux-grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== LOADING SPINNER ===== */
-        .gux-spinner-inline {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: none;
-        }
-
-        .gux-btn.loading .gux-spinner-inline {
-            display: inline-block;
-        }
-
-        .gux-btn.loading .gux-btn-text {
-            display: none;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .gux-hero h1 {
-                font-size: 1.75rem;
-            }
-
-            .gux-tab-btn span {
-                display: none;
-            }
-
-            .gux-tab-btn {
-                padding: var(--gux-spacing-md);
-            }
-
-            .gux-tab-content {
-                padding: var(--gux-spacing-lg);
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -701,15 +71,15 @@
         <div class="gux-card">
             <!-- Tabs Header -->
             <div class="gux-tabs-header">
-                <button class="gux-tab-btn active" onclick="switchTab('tts')">
+                <button class="gux-tab-btn active" data-tab="tts">
                     <ion-icon name="text-outline"></ion-icon>
                     <span>Text to Speech</span>
                 </button>
-                <button class="gux-tab-btn" onclick="switchTab('record')">
+                <button class="gux-tab-btn" data-tab="record">
                     <ion-icon name="mic-outline"></ion-icon>
                     <span>Record Audio</span>
                 </button>
-                <button class="gux-tab-btn" onclick="switchTab('import')">
+                <button class="gux-tab-btn" data-tab="import">
                     <ion-icon name="cloud-upload-outline"></ion-icon>
                     <span>Import File</span>
                 </button>
@@ -749,7 +119,7 @@
                     <textarea id="ttsText" class="gux-textarea" rows="5"
                         placeholder="Enter the text you want to convert to speech..."></textarea>
                 </div>
-                <button class="gux-btn gux-btn-primary" id="generateBtn" onclick="generateTTS()">
+                <button class="gux-btn gux-btn-primary" id="generateBtn">
                     <span class="gux-spinner-inline"></span>
                     <ion-icon name="flash-outline"></ion-icon>
                     <span class="gux-btn-text">Generate Audio</span>
@@ -759,7 +129,7 @@
             <!-- Tab: Record Audio -->
             <div id="record" class="gux-tab-content">
                 <div class="gux-record-container">
-                    <div id="recordBtn" class="gux-record-btn" onclick="toggleRecording()">
+                    <div id="recordBtn" class="gux-record-btn">
                         <ion-icon name="mic-outline" style="font-size: 2.5rem;"></ion-icon>
                     </div>
                     <p class="gux-record-status" id="recordStatus">Click to start recording</p>
@@ -772,8 +142,7 @@
                     <ion-icon name="cloud-upload-outline"></ion-icon>
                     <p>Drag & drop your WAV file here</p>
                     <p class="gux-drop-hint">or click to browse files</p>
-                    <input type="file" id="fileInput" accept=".wav" style="display: none;"
-                        onchange="handleFileSelect(this)">
+                    <input type="file" id="fileInput" accept=".wav" style="display: none;">
                 </div>
             </div>
 
@@ -787,7 +156,7 @@
                 <div class="gux-audio-player">
                     <div id="waveform"></div>
                     <div class="gux-player-controls">
-                        <button class="gux-play-btn" onclick="playPause()">
+                        <button class="gux-play-btn" id="playBtn">
                             <ion-icon name="play" style="font-size: 1.5rem; margin-left: 3px;"></ion-icon>
                         </button>
                     </div>
@@ -840,7 +209,7 @@
                         <input type="text" id="promptDesc" class="gux-input"
                             placeholder="Brief description for this prompt">
                     </div>
-                    <button class="gux-btn gux-btn-primary" id="exportBtn" onclick="exportToGenesys()">
+                    <button class="gux-btn gux-btn-primary" id="exportBtn">
                         <span class="gux-spinner-inline"></span>
                         <ion-icon name="cloud-upload-outline"></ion-icon>
                         <span class="gux-btn-text">Export Prompt</span>
@@ -861,53 +230,11 @@
         <span>Buy me a coffee</span>
     </a>
 
-    <style>
-        .kofi-button {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #ff5e5b 0%, #ff4f1f 100%);
-            color: white;
-            text-decoration: none;
-            font-family: 'Urbanist', sans-serif;
-            font-weight: 600;
-            font-size: 0.875rem;
-            border-radius: 50px;
-            box-shadow: 0 4px 16px rgba(255, 94, 91, 0.4);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
 
-        .kofi-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(255, 94, 91, 0.5);
-        }
-
-        .kofi-button svg {
-            width: 20px;
-            height: 20px;
-            fill: white;
-        }
-
-        @media (max-width: 600px) {
-            .kofi-button span {
-                display: none;
-            }
-
-            .kofi-button {
-                padding: 14px;
-                border-radius: 50%;
-            }
-        }
-    </style>
 
     <!-- Footer -->
     <footer class="gux-footer">
-        <p>© 2025 Prompt Studio 1.1 — Powered by <strong>Pilvi</strong></p>
+        <p>© 2025 Prompt Studio 1.2 — Powered by <strong>Pilvi</strong></p>
     </footer>
 
     <!-- Wavesurfer.js -->
