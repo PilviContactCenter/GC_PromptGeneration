@@ -27,9 +27,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 # Install runtime system dependencies
-# Azure Speech SDK relies on libasound2 and OpenSSL 1.1 (native in Bullseye)
+# Azure Speech SDK requires: libasound2, libssl1.1, and other libs
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libasound2 \
+    libssl1.1 \
     ca-certificates \
     wget \
     curl \
