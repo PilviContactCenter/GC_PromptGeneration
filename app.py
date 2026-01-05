@@ -223,6 +223,41 @@ def create_app():
         session.clear()
         return redirect(url_for('login'))
     
+    @app.route('/auth/admin', methods=['POST'])
+    def auth_admin():
+        """
+        Handle local admin authentication.
+        Password is stored in ADMIN_PASSWORD environment variable.
+        """
+        try:
+            data = request.get_json()
+            password = data.get('password', '')
+            
+            # Get admin password from environment
+            admin_password = os.environ.get('ADMIN_PASSWORD', '')
+            
+            if not admin_password:
+                return jsonify({'success': False, 'error': 'Admin login not configured'}), 403
+            
+            if password == admin_password:
+                # Create admin session
+                session['access_token'] = 'admin_local_session'
+                session['token_expires'] = time.time() + 86400  # 24 hours
+                session['user_info'] = {
+                    'id': 'local_admin',
+                    'name': 'Local Admin',
+                    'email': 'admin@local',
+                    'username': 'admin'
+                }
+                session['is_admin'] = True
+                
+                return jsonify({'success': True})
+            else:
+                return jsonify({'success': False, 'error': 'Invalid password'}), 401
+        
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
     # ============== MAIN ROUTES ==============
     
     @app.route('/')

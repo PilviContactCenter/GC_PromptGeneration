@@ -29,6 +29,7 @@ services:
       
       # Flask Configuration
       - SECRET_KEY=${SECRET_KEY}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - FLASK_ENV=production
     volumes:
       # Persist uploaded files
