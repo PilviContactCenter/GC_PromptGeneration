@@ -417,92 +417,96 @@ PromptGeneration/
 
 ## 🔄 CI/CD Pipeline
 
-This project uses **GitHub Actions** for automated builds and **Watchtower** for automatic container updates.
+This project uses **GitHub Actions** for build validation. Deployments are done **manually** to give you full control over when your server updates.
 
-### CI/CD Flow
+### Deployment Flow
 
 ```mermaid
 flowchart LR
-    subgraph Developer["👨‍💻 Developer"]
-        A[Push to main]
+    subgraph Local["💻 Local (Your PC)"]
+        A[Make changes]
+        B[Commit & Push]
     end
     
     subgraph GitHub["⚙️ GitHub Actions"]
-        B[Build Docker Image]
-        C[Push to GHCR]
+        C[Build Docker Image]
+        D[Validate & Test]
+        E[Generate Report ✅/❌]
     end
     
-    subgraph Server["🖧 Production Server"]
-        D[Watchtower detects update]
-        E[Pull optimized image]
-        F[Restart container]
+    subgraph Server["🖧 Server (Manual)"]
+        F[git pull]
+        G[docker compose build]
+        H[docker compose up -d]
     end
     
     A --> B
     B --> C
     C --> D
     D --> E
-    E --> F
+    
+    E -.->|When ready| F
+    F --> G
+    G --> H
     
     style A fill:#ff4f1f,color:#fff
-    style C fill:#6e5494,color:#fff
-    style F fill:#1fa343,color:#fff
+    style E fill:#6e5494,color:#fff
+    style H fill:#1fa343,color:#fff
 ```
 
 ### How It Works
 
-1. **Push to `main` branch** → GitHub Actions automatically builds a new Docker image
-2. **Image published** → Pushed to GitHub Container Registry (`ghcr.io/pilvicontactcenter/prompt-studio`)
-3. **Watchtower detects** → Checks for new images every 5 minutes
-4. **Auto-update** → Pulls and restarts the container with zero downtime
+| Step | Where | What Happens |
+|------|-------|--------------|
+| 1 | **Local PC** | Make code changes, commit, and push to `main` |
+| 2 | **GitHub Actions** | Automatically builds Docker image and validates it works |
+| 3 | **GitHub** | Generates a build report (✅ success or ❌ failure) |
+| 4 | **Server** | When **you decide**, manually deploy the update |
 
-### Image Tags
+> **Note:** GitHub Actions only validates the build — it does **NOT** push to any registry or auto-update your server!
 
-| Tag | Description |
-|-----|-------------|
-| `latest` | Most recent build from main branch |
-| `sha-xxxxxx` | Build from specific commit (for rollback) |
-| `YYYYMMDD-HHmm` | Timestamp-based version |
+### Manual Deployment
 
-### Setting Up Watchtower (Auto-Updates)
-
-For fully automated updates on your server:
+When you're ready to update your production server:
 
 ```bash
-# Start Watchtower alongside your app
-docker-compose -f docker-compose.prod.yml -f docker-compose.watchtower.yml up -d
+# 1. SSH into your server
+ssh user@your-server
+
+# 2. Navigate to the project directory
+cd /path/to/prompt-studio
+
+# 3. Pull the latest code
+git pull origin main
+
+# 4. Rebuild and restart the container
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+
+# 5. Verify it's running
+docker compose logs -f
 ```
 
-Watchtower will:
-- Check for new images every 5 minutes
-- Automatically pull and restart the container
-- Clean up old images
+### Quick Deployment Script
 
-### Manual Update
-
-If you prefer manual control:
+For convenience, you can create an `update.sh` script on your server:
 
 ```bash
-# Using the update script
+#!/bin/bash
+echo "🔄 Updating Prompt Studio..."
+cd /path/to/prompt-studio
+git pull origin main
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+echo "✅ Update complete!"
+docker compose logs --tail=20
+```
+
+Then run it whenever you want to update:
+```bash
 ./update.sh
-
-# Or manually
-docker pull ghcr.io/pilvicontactcenter/prompt-studio:latest
-docker-compose -f docker-compose.prod.yml down
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Rollback to Previous Version
-
-```bash
-# List available tags
-docker images ghcr.io/pilvicontactcenter/prompt-studio
-
-# Roll back to specific version
-docker-compose -f docker-compose.prod.yml down
-docker pull ghcr.io/pilvicontactcenter/prompt-studio:sha-abc1234
-# Edit docker-compose.prod.yml to use the specific tag, then:
-docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ---
