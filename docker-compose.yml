@@ -27,9 +27,12 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - FLASK_ENV=production
+    # Run as root to avoid volume permission issues
+    user: "0:0"
     volumes:
-      # Persist uploaded files
+      # Persist uploaded files and database
       - ./uploads:/app/uploads
+      - ./instance:/app/instance
     restart: unless-stopped
     logging:
       driver: "json-file"
