@@ -3,16 +3,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
-[![Docker](https://img.shields.io/badge/docker-ready-blue)](https://www.docker.com/)
-[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Genesys Cloud](https://img.shields.io/badge/Genesys%20Cloud-Compatible-orange)](https://www.genesys.com)
 
 **Create professional audio prompts for your Genesys Cloud contact center in minutes, not hours.**
-*Deployed with 2025 Best Practices: Secured, Containerized, and CI/CD Integrated.*
 
 </div>
-
-**Create professional audio prompts for your Genesys Cloud contact center in minutes, not hours.**
 
 Prompt Studio is a web application that streamlines the creation and management of IVR audio prompts. Whether you need to generate text-to-speech messages, record your own voice, or upload existing audio files — Prompt Studio handles it all and exports directly to Genesys Cloud.
 
@@ -83,13 +78,6 @@ Upload existing WAV files from your computer or professional recording studio.
 
 ### ☁️ One-Click Export
 Send your finished prompt directly to Genesys Cloud Architect with a single click. No more manual file uploads!
-
-### 🏗️ Modern 2025 Architecture
-Built with the latest web standards:
-- **Frontend**: Clean, lightweight interface using **CSS Variables** (Spark Design) and **Vanilla JS** (Zero dependencies).
-- **Backend**: Python 3.11 + Flask 3.x, optimized for speed.
-- **Security**: Non-root container execution, strict multi-stage builds, and secure session management.
-- **Deploy**: Cloud-native Docker container optimized for Gunicorn.
 
 ---
 
@@ -218,21 +206,14 @@ Export prompts in any language supported by Genesys Cloud:
 
 ### Prerequisites
 
+- **Python 3.9+** installed on your system
 - Azure Cognitive Services account (for Text-to-Speech)
 - Genesys Cloud organization with:
   - OAuth Client (Authorization Code) for user login
   - OAuth Client (Client Credentials) for API operations
   - Architect permissions
 
-Choose your deployment method below:
-
----
-
-## 🐳 Docker Deployment (Recommended)
-
-For contributors or customization, build the image locally.
-
-### Build and Run
+### Installation
 
 1. **Clone the repository**
    ```bash
@@ -240,87 +221,39 @@ For contributors or customization, build the image locally.
    cd GenesysCloudPromptGeneration
    ```
 
-2. **Configure environment**
+2. **Create virtual environment** (recommended)
    ```bash
-   cp .env.example .env
-   # Edit .env with your credentials
+   python -m venv venv
+   
+   # Windows
+   venv\Scripts\activate
+   
+   # macOS/Linux
+   source venv/bin/activate
    ```
 
-3. **Build and run**
-   ```bash
-   docker-compose up -d --build
-   ```
-
-4. **Access the application**
-   ```
-   http://localhost:5001
-   ```
-
-### Docker Commands
-
-```bash
-# Build the image
-docker build -t prompt-studio .
-
-# Run the container
-docker run -d \
-  --name prompt-studio \
-  -p 5001:5001 \
-  --env-file .env \
-  -v $(pwd)/uploads:/app/uploads \
-  prompt-studio
-
-# View logs
-docker logs -f prompt-studio
-
-# Stop the container
-docker-compose down
-```
-
----
-
-## 🐍 Local Python (Development)
-
-Run directly with Python for development and debugging.
-
-### Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/PilviContactCenter/GenesysCloudPromptGeneration.git
-   cd GenesysCloudPromptGeneration
-   ```
-
-2. **Install dependencies** (Python 3.9+ required)
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Configure environment**
+4. **Configure environment**
    ```bash
    cp .env.example .env
    # Edit .env with your credentials
    ```
 
-4. **Run the application**
+5. **Run the application**
    ```bash
    python app.py
    ```
 
-5. **Open in browser**
+6. **Open in browser**
    ```
    http://localhost:5001
    ```
 
 ---
-
-## 🏭 Production Deployment
-
-For production, consider:
-- Using a reverse proxy (Caddy/nginx) for HTTPS
-- Setting `OAUTH_REDIRECT_URI` to your production URL
-- Using persistent volumes for uploads and database
-- Configuring proper security headers
 
 ## ⚙️ Configuration
 
@@ -342,14 +275,9 @@ Copy `.env.example` to `.env` and configure:
 
 ```
 PromptGeneration/
-├── .github/
-│   └── workflows/
-│       └── docker-publish.yml    # CI/CD: Build validation
-├── app.py                        # Main Flask application (session-based auth)
+├── app.py                        # Main Flask application
 ├── config.py                     # Configuration settings
-├── Dockerfile                    # Docker build configuration
-├── docker-compose.yml            # Docker Compose configuration
-├── manual.md                     # Server deployment guide
+├── requirements.txt              # Python dependencies
 ├── services/
 │   ├── azure_tts.py              # Azure Text-to-Speech integration
 │   └── genesys_export.py         # Genesys Cloud Architect export
@@ -360,102 +288,6 @@ PromptGeneration/
 │   ├── index.html                # Main application page
 │   └── login.html                # OAuth login page
 └── uploads/                      # Temporary audio file storage
-```
-
----
-
-## 🔄 CI/CD Pipeline
-
-This project uses **GitHub Actions** for build validation. Deployments are done **manually** to give you full control over when your server updates.
-
-### Deployment Flow
-
-```mermaid
-flowchart LR
-    subgraph Local["💻 Local (Your PC)"]
-        A[Make changes]
-        B[Commit & Push]
-    end
-    
-    subgraph GitHub["⚙️ GitHub Actions"]
-        C[Build Docker Image]
-        D[Validate & Test]
-        E[Generate Report ✅/❌]
-    end
-    
-    subgraph Server["🖧 Server (Manual)"]
-        F[git pull]
-        G[docker compose build]
-        H[docker compose up -d]
-    end
-    
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    
-    E -.->|When ready| F
-    F --> G
-    G --> H
-    
-    style A fill:#ff4f1f,color:#fff
-    style E fill:#6e5494,color:#fff
-    style H fill:#1fa343,color:#fff
-```
-
-### How It Works
-
-| Step | Where | What Happens |
-|------|-------|--------------|
-| 1 | **Local PC** | Make code changes, commit, and push to `main` |
-| 2 | **GitHub Actions** | Automatically builds Docker image and validates it works |
-| 3 | **GitHub** | Generates a build report (✅ success or ❌ failure) |
-| 4 | **Server** | When **you decide**, manually deploy the update |
-
-> **Note:** GitHub Actions only validates the build — it does **NOT** push to any registry or auto-update your server!
-
-### Manual Deployment
-
-When you're ready to update your production server:
-
-```bash
-# 1. SSH into your server
-ssh user@your-server
-
-# 2. Navigate to the project directory
-cd /path/to/prompt-studio
-
-# 3. Pull the latest code
-git pull origin main
-
-# 4. Rebuild and restart the container
-docker compose down
-docker compose build --no-cache
-docker compose up -d
-
-# 5. Verify it's running
-docker compose logs -f
-```
-
-### Quick Deployment Script
-
-For convenience, you can create an `update.sh` script on your server:
-
-```bash
-#!/bin/bash
-echo "🔄 Updating Prompt Studio..."
-cd /path/to/prompt-studio
-git pull origin main
-docker compose down
-docker compose build --no-cache
-docker compose up -d
-echo "✅ Update complete!"
-docker compose logs --tail=20
-```
-
-Then run it whenever you want to update:
-```bash
-./update.sh
 ```
 
 ---
