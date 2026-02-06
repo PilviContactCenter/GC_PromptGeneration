@@ -208,6 +208,7 @@ body {
     box-shadow: var(--gux-shadow-md);
     overflow: hidden;
     transition: box-shadow var(--gux-transition-spring);
+    width: 1000px;
 }
 
 .gux-card:hover {
@@ -631,45 +632,345 @@ body {
     }
 }
 
-/* ===== KO-FI BUTTON ===== */
-.kofi-button {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
+/* ===== PROMPT LIBRARY ===== */
+.gux-library-controls {
+    display: flex;
+    gap: var(--gux-spacing-md);
+    margin-bottom: var(--gux-spacing-lg);
+    flex-wrap: wrap;
+}
+
+.gux-search-box {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #ff5e5b 0%, #ff4f1f 100%);
-    color: white;
-    text-decoration: none;
+}
+
+.gux-search-box ion-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--gux-color-text-tertiary);
+    font-size: 1.25rem;
+    pointer-events: none;
+}
+
+.gux-search-box .gux-input {
+    padding-left: 44px;
+}
+
+.gux-btn-sm {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+}
+
+.gux-prompts-container {
+    min-height: 200px;
+}
+
+/* Library Loading State */
+.gux-library-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gux-spacing-xxl);
+    color: var(--gux-color-text-secondary);
+}
+
+.gux-library-loading .gux-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gux-color-border);
+    border-top-color: var(--gux-color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: var(--gux-spacing-md);
+}
+
+/* Library Empty State */
+.gux-library-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gux-spacing-xxl);
+    color: var(--gux-color-text-secondary);
+    text-align: center;
+}
+
+.gux-library-empty ion-icon {
+    font-size: 4rem;
+    color: var(--gux-color-text-tertiary);
+    margin-bottom: var(--gux-spacing-md);
+}
+
+.gux-library-empty .gux-hint {
+    font-size: 0.875rem;
+    color: var(--gux-color-text-tertiary);
+    margin-top: var(--gux-spacing-sm);
+}
+
+/* Prompts Table */
+.gux-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    table-layout: fixed;
+}
+
+.gux-table thead {
+    background: var(--gux-color-surface-secondary);
+}
+
+.gux-table th {
+    padding: var(--gux-spacing-md);
+    text-align: left;
     font-family: 'Urbanist', sans-serif;
     font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--gux-color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--gux-color-border-light);
+}
+
+/* Column widths */
+.gux-table th:nth-child(1),
+.gux-table td:nth-child(1) {
+    width: 30%;
+}
+
+.gux-table th:nth-child(2),
+.gux-table td:nth-child(2) {
+    width: 35%;
+}
+
+.gux-table th:nth-child(3),
+.gux-table td:nth-child(3) {
+    width: 20%;
+}
+
+.gux-table th:nth-child(4),
+.gux-table td:nth-child(4) {
+    width: 15%;
+    text-align: center;
+}
+
+.gux-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: color var(--gux-transition-fast);
+}
+
+.gux-table th.sortable:hover {
+    color: var(--gux-color-primary);
+}
+
+.gux-table th .sort-icon {
     font-size: 0.875rem;
-    border-radius: 50px;
-    box-shadow: 0 4px 16px rgba(255, 94, 91, 0.4);
-    transition: all 0.3s ease;
-    z-index: 1000;
+    margin-left: 4px;
+    opacity: 0.5;
+    vertical-align: middle;
 }
 
-.kofi-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(255, 94, 91, 0.5);
+.gux-table th.sorted-asc .sort-icon {
+    opacity: 1;
+    color: var(--gux-color-primary);
 }
 
-.kofi-button svg {
-    width: 20px;
-    height: 20px;
-    fill: white;
+.gux-table th.sorted-desc .sort-icon {
+    opacity: 1;
+    color: var(--gux-color-primary);
+    transform: rotate(180deg);
 }
 
-@media (max-width: 600px) {
-    .kofi-button span {
+.gux-table td {
+    padding: var(--gux-spacing-md);
+    border-bottom: 1px solid var(--gux-color-border-light);
+    vertical-align: middle;
+}
+
+.gux-table tbody tr {
+    transition: background var(--gux-transition-fast);
+}
+
+.gux-table tbody tr:hover {
+    background: var(--gux-color-surface-secondary);
+}
+
+.gux-table .prompt-name {
+    font-weight: 600;
+    color: var(--gux-color-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 100%;
+}
+
+.gux-table .prompt-description {
+    color: var(--gux-color-text-secondary);
+    font-size: 0.875rem;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gux-table .prompt-languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.gux-language-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--gux-color-surface-secondary);
+    border: 1px solid var(--gux-color-border);
+    border-radius: 12px;
+    color: var(--gux-color-text-secondary);
+}
+
+.gux-language-badge.has-audio {
+    background: var(--gux-color-success-light);
+    border-color: rgba(31, 163, 67, 0.3);
+    color: #166534;
+}
+
+.gux-table .prompt-actions {
+    display: flex;
+    gap: var(--gux-spacing-sm);
+    justify-content: center;
+}
+
+.gux-btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid var(--gux-color-border);
+    color: var(--gux-color-text-secondary);
+    cursor: pointer;
+    transition: all var(--gux-transition-fast);
+}
+
+.gux-btn-icon:hover {
+    border-color: var(--gux-color-primary);
+    color: var(--gux-color-primary);
+    background: rgba(255, 79, 31, 0.08);
+}
+
+.gux-btn-icon.playing {
+    background: var(--gux-color-primary);
+    border-color: var(--gux-color-primary);
+    color: white;
+}
+
+/* Pagination */
+.gux-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gux-spacing-md);
+    margin-top: var(--gux-spacing-lg);
+    padding-top: var(--gux-spacing-lg);
+    border-top: 1px solid var(--gux-color-border-light);
+}
+
+.gux-pagination-info {
+    font-size: 0.875rem;
+    color: var(--gux-color-text-secondary);
+}
+
+/* Library Player */
+.gux-library-player {
+    margin-top: var(--gux-spacing-xl);
+    padding-top: var(--gux-spacing-xl);
+    border-top: 1px solid var(--gux-color-border-light);
+    animation: fadeSlideIn 0.3s ease;
+}
+
+.gux-library-player-content {
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    border: 1px solid var(--gux-color-border-light);
+    border-radius: var(--gux-radius-md);
+    padding: var(--gux-spacing-lg);
+}
+
+.gux-language-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--gux-spacing-md);
+    margin-bottom: var(--gux-spacing-md);
+}
+
+.gux-language-selector .gux-label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.gux-select-sm {
+    width: auto;
+    min-width: 150px;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+}
+
+#libraryWaveform {
+    border-radius: var(--gux-radius-sm);
+    overflow: hidden;
+}
+
+/* Responsive adjustments for library */
+@media (max-width: 768px) {
+    .gux-table thead {
         display: none;
     }
 
-    .kofi-button {
-        padding: 14px;
-        border-radius: 50%;
+    .gux-table tbody tr {
+        display: block;
+        margin-bottom: var(--gux-spacing-md);
+        padding: var(--gux-spacing-md);
+        background: var(--gux-color-surface-secondary);
+        border-radius: var(--gux-radius-md);
+    }
+
+    .gux-table td {
+        display: block;
+        padding: var(--gux-spacing-sm) 0;
+        border: none;
+    }
+
+    .gux-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--gux-color-text-tertiary);
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .gux-table .prompt-description {
+        max-width: none;
+        white-space: normal;
+    }
+
+    .gux-library-controls {
+        flex-direction: column;
+    }
+
+    .gux-search-box {
+        min-width: 100%;
     }
 }

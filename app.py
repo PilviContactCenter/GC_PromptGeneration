@@ -59,7 +59,13 @@ def create_app():
     
     # Import services here to avoid circular imports
     from services.azure_tts import generate_speech
-    from services.genesys_export import upload_prompt_to_genesys
+    from services.azure_stt import transcribe_and_translate
+    from services.genesys_export import (
+        upload_prompt_to_genesys,
+        list_prompts,
+        get_prompt_resources,
+        get_prompt_audio_url
+    )
     
     # ============== OAUTH ROUTES ==============
     
@@ -336,9 +342,108 @@ def create_app():
     def uploaded_file(filename):
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     
+    # ============== PROMPT LIBRARY API ROUTES ==============
+    
+    @app.route('/api/prompts', methods=['GET'])
+    @login_required
+    def api_list_prompts():
+        """List prompts from Genesys Cloud with pagination and filtering."""
+        try:
+            page = int(request.args.get('page', 1))
+            page_size = int(request.args.get('pageSize', 25))
+            search = request.args.get('search', '').strip() or None
+            sort_by = request.args.get('sortBy', 'name')
+            sort_order = request.args.get('sortOrder', 'asc')
+            
+            result = list_prompts(
+                page_number=page,
+                page_size=page_size,
+                name_filter=search,
+                sort_by=sort_by,
+                sort_order=sort_order
+            )
+            
+            return jsonify({
+                'success': True,
+                'prompts': result['prompts'],
+                'pagination': result['pagination']
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
+    @app.route('/api/prompts/<prompt_id>/resources', methods=['GET'])
+    @login_required
+    def api_get_prompt_resources(prompt_id):
+        """Get all language resources for a prompt."""
+        try:
+            resources = get_prompt_resources(prompt_id)
+            return jsonify({
+                'success': True,
+                'resources': resources
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
+    @app.route('/api/prompts/<prompt_id>/audio/<language>', methods=['GET'])
+    @login_required
+    def api_get_prompt_audio(prompt_id, language):
+        """Get audio URL for a specific prompt and language."""
+        try:
+            audio_url = get_prompt_audio_url(prompt_id, language)
+            if audio_url:
+                return jsonify({
+                    'success': True,
+                    'audio_url': audio_url
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': 'Audio not found for this language'
+                }), 404
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
+    @app.route('/api/prompts/<prompt_id>/transcribe/<language>', methods=['GET'])
+    @login_required
+    def api_transcribe_prompt(prompt_id, language):
+        """
+        Transcribe and translate a prompt's audio to English.
+        Uses Azure Speech-to-Text with translation.
+        """
+        try:
+            # First get the audio URL
+            audio_url = get_prompt_audio_url(prompt_id, language)
+            if not audio_url:
+                return jsonify({
+                    'success': False,
+                    'error': 'Audio not found for this language'
+                }), 404
+            
+            # Transcribe and translate
+            result = transcribe_and_translate(audio_url, language)
+            
+            if result['success']:
+                return jsonify({
+                    'success': True,
+                    'original_text': result['original_text'],
+                    'translated_text': result['translated_text'],
+                    'detected_language': result['detected_language']
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': result.get('error', 'Transcription failed')
+                }), 500
+                
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
     return app
 
 
+# Create app instance for gunicorn (app:app)
+app = create_app()
+
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug=False, host='0.0.0.0', port=5001)

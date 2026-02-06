@@ -83,6 +83,10 @@
                     <ion-icon name="cloud-upload-outline"></ion-icon>
                     <span>Import File</span>
                 </button>
+                <button class="gux-tab-btn" data-tab="library">
+                    <ion-icon name="library-outline"></ion-icon>
+                    <span>Prompt Library</span>
+                </button>
             </div>
 
             <!-- Tab: Text to Speech -->
@@ -143,6 +147,124 @@
                     <p>Drag & drop your WAV file here</p>
                     <p class="gux-drop-hint">or click to browse files</p>
                     <input type="file" id="fileInput" accept=".wav" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Tab: Prompt Library -->
+            <div id="library" class="gux-tab-content">
+                <!-- Search and Controls -->
+                <div class="gux-library-controls">
+                    <div class="gux-search-box">
+                        <ion-icon name="search-outline"></ion-icon>
+                        <input type="text" id="librarySearch" class="gux-input" placeholder="Search prompts by name...">
+                    </div>
+                    <button class="gux-btn gux-btn-secondary" id="refreshLibraryBtn">
+                        <ion-icon name="refresh-outline"></ion-icon>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+
+                <!-- Prompts List -->
+                <div class="gux-prompts-container">
+                    <div id="promptsLoading" class="gux-library-loading">
+                        <div class="gux-spinner"></div>
+                        <p>Loading prompts from Genesys Cloud...</p>
+                    </div>
+
+                    <div id="promptsEmpty" class="gux-library-empty" style="display: none;">
+                        <ion-icon name="folder-open-outline"></ion-icon>
+                        <p>No prompts found</p>
+                        <p class="gux-hint">Create prompts using the other tabs or adjust your search</p>
+                    </div>
+
+                    <table id="promptsTable" class="gux-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="name">
+                                    Name
+                                    <ion-icon name="chevron-up-outline" class="sort-icon"></ion-icon>
+                                </th>
+                                <th>Description</th>
+                                <th>Languages</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="promptsTableBody">
+                            <!-- Prompts will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div id="promptsPagination" class="gux-pagination" style="display: none;">
+                    <button class="gux-btn gux-btn-sm" id="prevPageBtn" disabled>
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                        Previous
+                    </button>
+                    <span id="paginationInfo" class="gux-pagination-info">Page 1 of 1</span>
+                    <button class="gux-btn gux-btn-sm" id="nextPageBtn" disabled>
+                        Next
+                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                    </button>
+                </div>
+
+                <!-- Library Audio Player (shown when playing a prompt) -->
+                <div id="libraryPlayerSection" class="gux-library-player" style="display: none;">
+                    <div class="gux-section-title">
+                        <ion-icon name="musical-notes-outline"></ion-icon>
+                        <span id="libraryPlayerTitle">Now Playing</span>
+                    </div>
+                    <div class="gux-library-player-content">
+                        <div class="gux-language-selector">
+                            <label class="gux-label">Language:</label>
+                            <select id="libraryLanguageSelect" class="gux-select gux-select-sm"></select>
+                        </div>
+                        <div class="gux-audio-player">
+                            <div id="libraryWaveform"></div>
+                            <div class="gux-player-controls">
+                                <button class="gux-play-btn" id="libraryPlayBtn">
+                                    <ion-icon name="play" style="font-size: 1.5rem; margin-left: 3px;"></ion-icon>
+                                </button>
+                                <button class="gux-btn gux-btn-secondary gux-btn-sm" id="transcribeBtn">
+                                    <span class="gux-spinner-inline"></span>
+                                    <ion-icon name="text-outline"></ion-icon>
+                                    <span class="gux-btn-text">Transcribe & Translate</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transcription Results -->
+                    <div id="transcriptionSection" class="gux-transcription-section" style="display: none;">
+                        <div class="gux-section-title">
+                            <ion-icon name="language-outline"></ion-icon>
+                            Transcription & Translation
+                        </div>
+                        
+                        <!-- Loading State -->
+                        <div id="transcriptionLoading" class="gux-transcription-loading">
+                            <div class="gux-spinner"></div>
+                            <p>Transcribing audio...</p>
+                        </div>
+                        
+                        <!-- Results -->
+                        <div id="transcriptionContent" class="gux-transcription-content" style="display: none;">
+                            <div class="gux-transcription-box">
+                                <div class="gux-transcription-header">
+                                    <ion-icon name="mic-outline"></ion-icon>
+                                    <span>Original (<span id="detectedLanguage">-</span>)</span>
+                                </div>
+                                <p id="originalText" class="gux-transcription-text"></p>
+                            </div>
+                            <div class="gux-transcription-box gux-translation">
+                                <div class="gux-transcription-header">
+                                    <ion-icon name="globe-outline"></ion-icon>
+                                    <span>English Translation</span>
+                                </div>
+                                <p id="translatedText" class="gux-transcription-text"></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -219,17 +341,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Ko-fi Floating Button -->
-    <a href="https://ko-fi.com/pilvi_pl" target="_blank" rel="noopener noreferrer" class="kofi-button"
-        title="Support me on Ko-fi">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z" />
-        </svg>
-        <span>Buy me a coffee</span>
-    </a>
-
 
 
     <!-- Footer -->
