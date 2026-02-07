@@ -974,3 +974,99 @@ body {
         min-width: 100%;
     }
 }
+
+/* ===== TRANSCRIPTION SECTION ===== */
+.gux-transcription-section {
+    margin-top: var(--gux-spacing-lg);
+    padding-top: var(--gux-spacing-lg);
+    border-top: 1px solid var(--gux-color-border-light);
+}
+
+.gux-transcription-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gux-spacing-xl);
+    color: var(--gux-color-text-secondary);
+}
+
+.gux-transcription-loading p {
+    margin-top: var(--gux-spacing-md);
+    font-size: 0.9375rem;
+}
+
+.gux-transcription-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gux-spacing-md);
+}
+
+.gux-transcription-box {
+    background: var(--gux-color-surface-secondary);
+    border: 1px solid var(--gux-color-border-light);
+    border-radius: var(--gux-radius-md);
+    padding: var(--gux-spacing-md);
+}
+
+.gux-transcription-box.gux-translation {
+    background: linear-gradient(135deg, rgba(27, 61, 111, 0.05) 0%, rgba(27, 61, 111, 0.1) 100%);
+    border-color: rgba(27, 61, 111, 0.2);
+}
+
+.gux-transcription-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gux-spacing-sm);
+    margin-bottom: var(--gux-spacing-sm);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--gux-color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.gux-transcription-header ion-icon {
+    font-size: 1rem;
+    color: var(--gux-color-primary);
+}
+
+.gux-translation .gux-transcription-header ion-icon {
+    color: var(--gux-color-secondary);
+}
+
+.gux-transcription-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--gux-color-text-primary);
+    margin: 0;
+}
+
+/* Transcribe button styles */
+#transcribeBtn {
+    margin-left: var(--gux-spacing-md);
+}
+
+#transcribeBtn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+#transcribeBtn.loading .gux-spinner-inline {
+    display: inline-block;
+}
+
+#transcribeBtn.loading .gux-btn-text {
+    display: none;
+}
+
+#transcribeBtn.loading ion-icon {
+    display: none;
+}
+
+/* Player controls layout */
+.gux-player-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--gux-spacing-md);
+}
